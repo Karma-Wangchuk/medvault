@@ -23,7 +23,7 @@ function App() {
 
   useEffect(() => {
     const template = async () => {
-      const contractAddress = "0x26B61e2dBC8b8f297AAE974635c14FB8575589D4";
+      const contractAddress = "0x80bd53D33586A2869Fb22B4506F3e7d9df86a4Ca";
       // const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
       const contractABI = abi.abi;
 
@@ -94,12 +94,6 @@ function App() {
           <Route path="/" exact element={<Form state={state}/>} />
           <Route path="/Data" element={<Data state={state} />} />
         </Routes>
-        {/* <Alert
-          isPending={isPending}
-          isError={isError}
-          event={events}
-          chainId={chainId}
-        /> */}
       </div>
     </div>
   );

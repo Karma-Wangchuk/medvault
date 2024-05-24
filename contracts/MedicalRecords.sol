@@ -1,10 +1,11 @@
-//SPDX-License-Identifier:MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract MedicalRecords {
     uint public recordId;
     mapping(uint => Record) records;
     mapping(uint => bool) public isDeleted;
+
     struct Record {
         uint recordId;
         uint timestamp;
@@ -107,6 +108,7 @@ contract MedicalRecords {
             string memory
         )
     {
+        require(!isDeleted[_recordId], "Record not found or has been deleted");
         Record storage record = records[_recordId];
         return (
             record.timestamp,
@@ -121,52 +123,21 @@ contract MedicalRecords {
     }
 
     function getAllRecords() public view returns (Record[] memory) {
-        Record[] memory _records = new Record[](recordId);
+        uint count = 0;
         for (uint i = 1; i <= recordId; i++) {
             if (!isDeleted[i]) {
-                _records[i - 1] = records[i];
+                count++;
+            }
+        }
+
+        Record[] memory _records = new Record[](count);
+        uint index = 0;
+        for (uint i = 1; i <= recordId; i++) {
+            if (!isDeleted[i]) {
+                _records[index] = records[i];
+                index++;
             }
         }
         return _records;
-    }
-
-    function getRecordId() public view returns (uint) {
-        return recordId;
-    }
-
-    function getTimeStamp(uint _recordId) public view returns (uint) {
-        return records[_recordId].timestamp;
-    }
-
-    function getName(uint _recordId) public view returns (string memory) {
-        return records[_recordId].name;
-    }
-
-    function getAge(uint _recordId) public view returns (uint) {
-        return records[_recordId].age;
-    }
-
-    function getGender(uint _recordId) public view returns (string memory) {
-        return records[_recordId].gender;
-    }
-
-    function getBloodType(uint _recordId) public view returns (string memory) {
-        return records[_recordId].bloodType;
-    }
-
-    function getAllergies(uint _recordId) public view returns (string memory) {
-        return records[_recordId].allergies;
-    }
-
-    function getDiagnosis(uint _recordId) public view returns (string memory) {
-        return records[_recordId].diagnosis;
-    }
-
-    function getTreatment(uint _recordId) public view returns (string memory) {
-        return records[_recordId].treatment;
-    }
-
-    function getDeleted(uint256 _recordId) public view returns (bool) {
-        return isDeleted[_recordId];
     }
 }

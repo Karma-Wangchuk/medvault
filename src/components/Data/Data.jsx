@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./data.css";
+import { ethers } from "ethers"; // Import ethers.js to handle BigNumber conversion
 
 const Data = ({ state }) => {
   const [lists, setLists] = useState([]);
@@ -9,7 +10,18 @@ const Data = ({ state }) => {
     const listDetails = async () => {
       try {
         const allRecords = await contract.getAllRecords();
-        setLists(allRecords);
+        const formattedRecords = allRecords.map(record => ({
+          recordId: record.recordId.toNumber(), // Convert BigNumber to number
+          timestamp: new Date(record.timestamp.toNumber() * 1000).toLocaleString(), // Convert and format timestamp
+          name: record.name,
+          age: record.age.toNumber(), // Convert BigNumber to number
+          gender: record.gender,
+          bloodType: record.bloodType,
+          allergies: record.allergies,
+          diagnosis: record.diagnosis,
+          treatment: record.treatment
+        }));
+        setLists(formattedRecords);
       } catch (error) {
         console.error("Error fetching data:", error);
         alert("Failed to fetch data");
@@ -26,7 +38,6 @@ const Data = ({ state }) => {
         setLists((prevLists) =>
           prevLists.filter((item) => item.recordId !== data.recordId)
         );
-        
       } catch (error) {
         console.error("Error deleting record:", error);
         alert("Failed to delete record");
@@ -57,11 +68,11 @@ const Data = ({ state }) => {
             </thead>
             <tbody>
               {lists.map((data, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{data.formattedTimestamp}</td>
+                <tr key={data.recordId}>
+                  <td>{data.recordId}</td>
+                  <td>{data.timestamp}</td>
                   <td>{data.name}</td>
-                  <td>{data.ageNew}</td>
+                  <td>{data.age}</td>
                   <td>{data.gender}</td>
                   <td>{data.bloodType}</td>
                   <td>{data.allergies}</td>
